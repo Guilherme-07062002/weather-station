@@ -19,8 +19,48 @@ oled_height = 64
 
 oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
 
+# Inicializar o botão
+botao_pin = machine.Pin(33, machine.Pin.IN, machine.Pin.PULL_UP)
+
 # Limite de luminosidade para distinguir entre manhã e noite
 limite_luminosidade = 1000
+
+# Variável para armazenar o modo de exibição atual
+
+modos_exibicao = ['manha_noite', 'temperatura', 'umidade']
+modo_exibicao = modos_exibicao[0]
+
+def exibir_temperatura(temperatura):
+    # Limpar o display
+    oled.fill(0)
+
+    # Escrever os valores na tela
+    oled.text("Temp: {:.1f} C".format(temperatura), 0, 0)
+    
+    # Atualizar o display
+    oled.show()
+
+def exibir_umidade(umidade):
+    # Limpar o display
+    oled.fill(0)
+
+    # Escrever os valores na tela
+    oled.text("Umidade: {:.1f} %".format(umidade), 0, 16)
+    
+    # Atualizar o display
+    oled.show()
+
+def exibir_manha_noite(luminosidade):
+    periodo = "Manha" if luminosidade > limite_luminosidade else "Noite"
+    # Limpar o display
+    oled.fill(0)
+
+    # Escrever os valores na tela
+    # oled.text("Luminosidade: {}".format(luminosidade), 0, 0)
+    oled.text("Periodo: {}".format(periodo), 0, 16)
+    
+    # Atualizar o display
+    oled.show()
 
 while True:
     try:
@@ -34,26 +74,28 @@ while True:
         # Ler o valor do sensor LDR
         luminosidade = sensorLDR.read()
 
-        # Determinar se é manhã ou noite
-        periodo = "Manha" if luminosidade > limite_luminosidade else "Noite"
-        
-        # # Exibir os dados no console
-        # print("Temperatura: {}°C, Umidade: {}%, Valor LDR: {}".format(temperatura, umidade, valor_ldr))
+        # Ler o estado do botão
+        botao_pressionado = not botao_pin.value()
 
-        # Limpar o display
-        oled.fill(0)
+        # Verificar se o botão foi pressionado
+        if botao_pressionado:
+            if modo_exibicao == modos_exibicao[0]:
+                modo_exibicao = modos_exibicao[1]
+            elif modo_exibicao == modos_exibicao[1]:
+                modo_exibicao = modos_exibicao[2]
+            else:
+                modo_exibicao = modos_exibicao[0]
 
-        # Escrever os valores na tela
-        oled.text("Temp: {:.1f} C".format(temperatura), 0, 0)
-        oled.text("Umidade: {:.1f} %".format(umidade), 0, 16)
-        # oled.text("Lumi: {}".format(luminosidade), 0, 32)
-        oled.text("Periodo: {}".format(periodo), 0, 48)
-
-        # Atualizar o display
-        oled.show()
+        # Atualizar o modo de exibição
+        if modo_exibicao == modos_exibicao[0]:
+            exibir_temperatura(temperatura)
+        elif modo_exibicao == modos_exibicao[1]:
+            exibir_umidade(umidade)
+        else:
+            exibir_manha_noite(luminosidade)
     
     except OSError as e:
         print("Erro ao ler dados do sensor:", e)
-    
-    # Aguardar 2 segundos antes de realizar a próxima leitura
-    time.sleep(2)
+
+      # Aguardar um curto período para evitar leituras rápidas do botão
+    time.sleep(0.1)
