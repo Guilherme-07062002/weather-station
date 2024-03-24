@@ -9,7 +9,8 @@ weather using Wokwi.
 
 ### Specifications
 
-- The meterological station must provide information on humidity,temperature and luminosity. Tip: use `DHT22` and `LDR`;
+- The meterological station must provide information on humidity,temperature and luminosity.
+  - Tip: use `DHT22` and `LDR`;
 - The data must be presented on a screen;
 - The LDR should be used to indicate whether it is morning or night, based on luminosity;
 - On the display it is possible to use images such as a sun or a moon to indication of day and night.
