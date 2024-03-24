@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "author": "Guilherme Gomes de Medeiros",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard-mini", "id": "bb1", "top": 56.2, "left": 141.6, "attrs": {} },
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": -4.76,
+      "attrs": { "env": "micropython-20231227-v1.22.0" }
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -210.9,
+      "left": 273,
+      "attrs": { "temperature": "32.7", "humidity": "67" }
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": -131.2,
+      "left": 394.4,
+      "attrs": {}
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled1",
+      "top": 185.54,
+      "left": 489.83,
+      "attrs": { "i2cAddress": "0x3c" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "dht1:SDA", "esp:23", "green", [ "v67.2", "h-182.3", "v19.2" ] ],
+    [ "esp:CLK", "bb1:1b.j", "red", [ "h0" ] ],
+    [ "bb1:1t.a", "dht1:VCC", "red", [ "v-86.4", "h134.4" ] ],
+    [ "esp:GND.2", "bb1:2b.i", "black", [ "h9.6", "v134.4" ] ],
+    [ "bb1:2t.a", "dht1:GND", "black", [ "v-76.8", "h153.6" ] ],
+    [ "ldr1:VCC", "bb1:1t.b", "red", [ "h67.2", "v124.8", "h-480" ] ],
+    [ "ldr1:GND", "bb1:2t.b", "black", [ "h57.6", "v124.4", "h-460.8" ] ],
+    [ "ldr1:AO", "esp:33", "green", [ "h0" ] ],
+    [ "oled1:GND", "bb1:2t.c", "black", [ "v0" ] ],
+    [ "oled1:VCC", "bb1:1b.h", "red", [ "v-38.4", "h-383.85" ] ],
+    [ "oled1:SCL", "esp:22", "green", [ "v0" ] ],
+    [ "esp:21", "oled1:SDA", "limegreen", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}
